@@ -1,35 +1,35 @@
-import fetch from 'isomorphic-unfetch'
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import fetch from "isomorphic-unfetch";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 /* Allows you to view pet card info and delete pet card*/
 
 const Pet = ({ pet }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    document.querySelector('#delete-btn').addEventListener('click', () => {
-      document.querySelector('.confirmation-box').classList.add('show')
-    })
-    document.querySelector('#yes-delete-btn').addEventListener('click', () => {
-      deletePet()
-    })
-    document.querySelector('#no-delete-btn').addEventListener('click', () => {
-      document.querySelector('.confirmation-box').classList.remove('show')
-    })
-  })
+    document.querySelector("#delete-btn").addEventListener("click", () => {
+      document.querySelector(".confirmation-box").classList.add("show");
+    });
+    document.querySelector("#yes-delete-btn").addEventListener("click", () => {
+      deletePet();
+    });
+    document.querySelector("#no-delete-btn").addEventListener("click", () => {
+      document.querySelector(".confirmation-box").classList.remove("show");
+    });
+  });
 
   const deletePet = async () => {
-    const petID = router.query.id
+    const petID = router.query.id;
     try {
-      await fetch(`/api/pets/${petID}`, {
-        method: 'Delete',
-      })
-      router.push('/')
+      await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${petID}`, {
+        method: "Delete"
+      });
+      router.push("/");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className="pet-container">
@@ -57,14 +57,16 @@ const Pet = ({ pet }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 Pet.getInitialProps = async ({ query: { id } }) => {
-  const res = await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${id}`)
-  const { data } = await res.json()
+  const res = await fetch(
+    `${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${id}`
+  );
+  const { data } = await res.json();
 
-  return { pet: data }
-}
+  return { pet: data };
+};
 
-export default Pet
+export default Pet;

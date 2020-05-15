@@ -1,63 +1,67 @@
-import fetch from 'isomorphic-unfetch'
-import { useRouter } from 'next/router'
+import fetch from "isomorphic-unfetch";
+import { useRouter } from "next/router";
 
 const Form = (formId, forNewPet = true) => {
-  const router = useRouter()
-  const contentType = 'application/json'
+  const router = useRouter();
+  const contentType = "application/json";
 
   /* The PUT method edits an existing entry in the mongodb database. */
   const putData = async form => {
     try {
-      await fetch(`/api/pets/${router.query.id}`, {
-        method: 'PUT',
-        headers: {
-          Accept: contentType,
-          'Content-Type': contentType,
-        },
-        body: JSON.stringify(form),
-      })
-      router.push('/')
+      await fetch(
+        `${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${router.query.id}`,
+        {
+          method: "PUT",
+          headers: {
+            Accept: contentType,
+            "Content-Type": contentType
+          },
+          body: JSON.stringify(form)
+        }
+      );
+      router.push("/");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   /* The POST method adds a new entry in the mongodb database. */
   const postData = async form => {
     try {
-      await fetch('/api/pets', {
-        method: 'POST',
+      await fetch("${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets", {
+        method: "POST",
         headers: {
           Accept: contentType,
-          'Content-Type': contentType,
+          "Content-Type": contentType
         },
-        body: JSON.stringify(form),
-      })
-      router.push('/')
+        body: JSON.stringify(form)
+      });
+      router.push("/");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleSubmit = e => {
-    e.preventDefault()
-    let form = {}
+    e.preventDefault();
+    let form = {};
 
     // For each field in the pet form, add the value to the form object
     document
       .querySelectorAll(`#${formId} input, #${formId} textarea`)
       .forEach(element => {
-        if (element.name === 'age') form[element.name] = parseInt(element.value)
-        else if (element.name === 'likes' || element.name === 'dislikes')
-          form[element.name] = [element.value]
-        else if (element.name === 'poddy_trained') {
-          form[element.name] = element.checked
-        } else form[element.name] = element.value
-      })
+        if (element.name === "age")
+          form[element.name] = parseInt(element.value);
+        else if (element.name === "likes" || element.name === "dislikes")
+          form[element.name] = [element.value];
+        else if (element.name === "poddy_trained") {
+          form[element.name] = element.checked;
+        } else form[element.name] = element.value;
+      });
 
-    if (forNewPet) postData(form)
-    else putData(form)
-  }
+    if (forNewPet) postData(form);
+    else putData(form);
+  };
 
   return (
     <form action="POST" id={formId} onSubmit={handleSubmit}>
@@ -92,7 +96,7 @@ const Form = (formId, forNewPet = true) => {
         Submit
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default Form
+export default Form;
