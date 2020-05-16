@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import fetch from 'isomorphic-unfetch'
+import Link from "next/link";
+import fetch from "isomorphic-unfetch";
 
 const Index = ({ pets }) => {
   return (
@@ -45,15 +45,15 @@ const Index = ({ pets }) => {
         </div>
       ))}
     </>
-  )
-}
+  );
+};
 
 /* Retrieves pet(s) data from mongodb database */
 Index.getInitialProps = async () => {
-  const res = await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets`)
-  const { data } = await res.json()
+  const res = await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets`);
+  const { data } = await res.json();
 
-  return { pets: data }
-}
+  return { pets: data };
+};
 
-export default Index
+export default Index;

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 /* Allows you to view pet card info and delete pet card*/
 
-const Pet = ({ pet }) => {
+export const Pet = ({ pet }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const Pet = ({ pet }) => {
   const deletePet = async () => {
     const petID = router.query.id;
     try {
-      await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${petID}`, {
+      await fetch(`/api/pets/${petID}`, {
         method: "Delete"
       });
       router.push("/");

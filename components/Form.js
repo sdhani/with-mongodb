@@ -8,17 +8,14 @@ const Form = (formId, forNewPet = true) => {
   /* The PUT method edits an existing entry in the mongodb database. */
   const putData = async form => {
     try {
-      await fetch(
-        `${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${router.query.id}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: contentType,
-            "Content-Type": contentType
-          },
-          body: JSON.stringify(form)
-        }
-      );
+      await fetch(`/api/pets/${router.query.id}`, {
+        method: "PUT",
+        headers: {
+          Accept: contentType,
+          "Content-Type": contentType
+        },
+        body: JSON.stringify(form)
+      });
       router.push("/");
     } catch (error) {
       console.log(error);
@@ -28,7 +25,7 @@ const Form = (formId, forNewPet = true) => {
   /* The POST method adds a new entry in the mongodb database. */
   const postData = async form => {
     try {
-      await fetch("${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets", {
+      await fetch("/api/pets", {
         method: "POST",
         headers: {
           Accept: contentType,
