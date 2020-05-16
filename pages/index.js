@@ -50,7 +50,7 @@ const Index = ({ pets }) => {
 
 /* Retrieves pet(s) data from mongodb database */
 Index.getInitialProps = async () => {
-  const res = await fetch(`${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets`);
+  const res = await fetch(`${process.env.BASE_URL}/api/pets`);
   const { data } = await res.json();
 
   return { pets: data };

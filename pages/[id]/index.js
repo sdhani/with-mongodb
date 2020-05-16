@@ -62,7 +62,7 @@ export const Pet = ({ pet }) => {
 
 Pet.getInitialProps = async ({ query: { id } }) => {
   const res = await fetch(
-    `${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${id}`
+    process.env.NEXT_EXAMPLE_BASE_URL + "/api/pets/${id}"
   );
   const { data } = await res.json();
 
