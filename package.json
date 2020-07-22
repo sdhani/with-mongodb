@@ -1,26 +1,17 @@
 {
-  "name": "with-mongodb",
+  "name": "with-mongodb-mongoose",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "isomorphic-unfetch": "^3.0.0",
-    "mongodb": "^3.5.7",
     "mongoose": "^5.9.13",
-    "next": "^9.4.0",
+    "next": "^9.4.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "swr": "^0.2.0"
+    "swr": "0.2.2"
   },
-  "description": "Next.js + MongoDB Example",
-  "main": "next.config.js",
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "dotenv": "8.2.0"
-  }
+  "license": "ISC"
 }

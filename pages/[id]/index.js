@@ -1,72 +1,84 @@
-import fetch from "isomorphic-unfetch";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import dbConnect from '../../utils/dbConnect'
+import Pet from '../../models/Pet'
 
 /* Allows you to view pet card info and delete pet card*/
+const PetPage = ({ pet }) => {
+  const router = useRouter()
+  const [message, setMessage] = useState('')
+  const handleDelete = async () => {
+    const petID = router.query.id
 
-export const Pet = ({ pet }) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    document.querySelector("#delete-btn").addEventListener("click", () => {
-      document.querySelector(".confirmation-box").classList.add("show");
-    });
-    document.querySelector("#yes-delete-btn").addEventListener("click", () => {
-      deletePet();
-    });
-    document.querySelector("#no-delete-btn").addEventListener("click", () => {
-      document.querySelector(".confirmation-box").classList.remove("show");
-    });
-  });
-
-  const deletePet = async () => {
-    const petID = router.query.id;
     try {
       await fetch(`/api/pets/${petID}`, {
-        method: "Delete"
-      });
-      router.push("/");
+        method: 'Delete',
+      })
+      router.push('/')
     } catch (error) {
-      console.log(error);
+      setMessage('Failed to delete the pet.')
     }
-  };
+  }
 
   return (
-    <div className="pet-container">
-      <>
-        <h1>{pet.name}</h1>
-        <p>{pet.owner_name}</p>
-        <p>{pet.species}</p>
-        <p>{pet.age}</p>
-        <p>{pet.poddy_trained}</p>
-        <p>{pet.diet}</p>
-        <p>{pet.image_url}</p>
-        <p>{pet.likes}</p>
-        <p>{pet.dislikes}</p>
-        <button className="btn delete" id="delete-btn" color="red">
-          Delete
-        </button>
-      </>
+    <div key={pet._id}>
+      <div className="card">
+        <img src={pet.image_url} />
+        <h5 className="pet-name">{pet.name}</h5>
+        <div className="main-content">
+          <p className="pet-name">{pet.name}</p>
+          <p className="owner">Owner: {pet.owner_name}</p>
 
-      <div className="confirmation-box">
-        <button className="btn" id="yes-delete-btn">
-          Yes
-        </button>
-        <button className="btn" id="no-delete-btn">
-          No
-        </button>
+          {/* Extra Pet Info: Likes and Dislikes */}
+          <div className="likes info">
+            <p className="label">Likes</p>
+            <ul>
+              {pet.likes.map((data, index) => (
+                <li key={index}>{data} </li>
+              ))}
+            </ul>
+          </div>
+          <div className="dislikes info">
+            <p className="label">Dislikes</p>
+            <ul>
+              {pet.dislikes.map((data, index) => (
+                <li key={index}>{data} </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="btn-container">
+            <Link href="/[id]/edit" as={`/${pet._id}/edit`}>
+              <button className="btn edit">Edit</button>
+            </Link>
+            <button className="btn delete" onClick={handleDelete}>
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
+      {message && <p>{message}</p>}
     </div>
-  );
-};
+  )
+}
 
-Pet.getInitialProps = async ({ query: { id } }) => {
-  const res = await fetch(
-    process.env.NEXT_EXAMPLE_BASE_URL + "/api/pets/${id}"
-  );
-  const { data } = await res.json();
+export async function getStaticPaths() {
+  await dbConnect()
 
-  return { pet: data };
-};
+  const result = await Pet.find({})
+  const paths = result.map((doc) => ({ params: { id: doc._id.toString() } }))
 
-export default Pet;
+  return { paths, fallback: false }
+}
+
+export async function getStaticProps({ params }) {
+  await dbConnect()
+
+  const pet = await Pet.findById(params.id).lean()
+  pet._id = pet._id.toString()
+
+  return { props: { pet } }
+}
+
+export default PetPage

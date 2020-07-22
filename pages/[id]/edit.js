@@ -1,28 +1,33 @@
-import { useEffect } from "react";
-import fetch from "isomorphic-unfetch";
-import Form from "../../components/Form";
+import { useRouter } from 'next/router'
+import useSWR from 'swr'
+import Form from '../../components/Form'
 
-const EditPet = ({ pet }) => {
-  useEffect(() => {
-    document
-      .querySelectorAll("#edit-pet-form input, #edit-pet-form textarea")
-      .forEach(element => {
-        if (element.name === "poddy_trained")
-          element.checked = pet[element.name];
-        else element.value = pet[element.name];
-      });
-  });
+const fetcher = (url) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((json) => json.data)
 
-  return Form("edit-pet-form", false);
-};
+const EditPet = () => {
+  const router = useRouter()
+  const { id } = router.query
+  const { data: pet, error } = useSWR(id ? `/api/pets/${id}` : null, fetcher)
 
-EditPet.getInitialProps = async ({ query: { id } }) => {
-  const res = await fetch(
-    `${process.env.NEXT_EXAMPLE_BASE_URL}/api/pets/${id}`
-  );
-  const { data } = await res.json();
+  if (error) return <p>Failed to load</p>
+  if (!pet) return <p>Loading...</p>
 
-  return { pet: data };
-};
+  const petForm = {
+    name: pet.name,
+    owner_name: pet.owner_name,
+    species: pet.species,
+    age: pet.age,
+    poddy_trained: pet.poddy_trained,
+    diet: pet.diet,
+    image_url: pet.image_url,
+    likes: pet.likes,
+    dislikes: pet.dislikes,
+  }
 
-export default EditPet;
+  return <Form formId="edit-pet-form" petForm={petForm} forNewPet={false} />
+}
+
+export default EditPet

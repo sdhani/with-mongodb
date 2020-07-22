@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 /* PetSchema will correspond to a collection in your MongoDB database. */
 const PetSchema = new mongoose.Schema({
@@ -40,17 +40,20 @@ const PetSchema = new mongoose.Schema({
   },
   image_url: {
     /* Url to pet image */
+
     required: [true, 'Please provide an image url for this pet.'],
     type: String,
   },
   likes: {
     /* List of things your pet likes to do */
+
     type: Array,
   },
   dislikes: {
     /* List of things your pet does not like to do */
+
     type: Array,
   },
 })
 
-module.exports = mongoose.models.Pet || mongoose.model('Pet', PetSchema)
+export default mongoose.models.Pet || mongoose.model('Pet', PetSchema)
